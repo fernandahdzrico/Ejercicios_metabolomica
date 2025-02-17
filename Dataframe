@@ -1,0 +1,10 @@
+Motivo_de_muerte <- c("Falla del sistema urinario","Neoplasia","Infeccioso","Trauma","Falla sistema cardiovacular","Muerte súbita","Cuerpo extraño")
+Edad_0_a_4_años <- c(16,13,23,19,4,3,1)
+Edad_5_a_9_años <- c(33,23,15,5,6,3,5)
+Edad_10_a_14_años <- c(47,50,13,3,9,1,0)
+Edad_15_años_o_más <- c(43,37,2,1,2,0,0)
+
+Tabla_3 <- data.frame(Motivo_de_muerte=Motivo_de_muerte,
+                      Edad_0_a_4_años=Edad_0_a_4_años,Edad_5_a_9_años=Edad_5_a_9_años,Edad_10_a_14_años=Edad_10_a_14_años,Edad_15_años_o_más=Edad_15_años_o_más)
+View(Tabla_3) 
+head(Tabla_3) 
