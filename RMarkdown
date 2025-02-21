@@ -1,0 +1,78 @@
+---
+title: "Gráfica de dispersión"
+author: "Fernanda Hernández Rico"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+#Command+option+i para el chunk
+```{r}
+install.packages("pacman")
+library("pacman")
+
+p_load("readr","dplyr","ggplot2")
+```
+```{r}
+PCR <- read.csv(file="https://raw.githubusercontent.com/ManuelLaraMVZ/Transcript-mica/main/datos_miRNAs.csv")
+head(PCR)
+PCR
+```
+```{r}
+Referencia <- PCR %>% 
+  filter(Condicion == "Control") %>% select(-2) %>% 
+  filter(Gen == "U6 snRNA-001973")
+Referencia
+```
+
+```{r}
+Genes <- PCR %>% 
+  filter(Condicion == "Target") %>% select(-2)
+Genes
+```
+
+```{r}
+Mean_Ref <- Referencia %>% 
+  mutate(Mean_Cx = (Cx1+Cx2+Cx3)/3, Mean_Tx = (T1+T2+T3)/3) %>% 
+  select("Gen","Mean_Cx","Mean_Tx")
+
+Mean_Ref
+```
+
+```{r}
+Mean_Gen <- Genes %>% 
+  mutate(Mean_Cx = (Cx1+Cx2+Cx3)/3, Mean_Tx = (T1+T2+T3)/3) %>% 
+  select("Gen","Mean_Cx","Mean_Tx")
+
+Mean_Gen
+```
+
+```{r}
+Analisis <- Mean_Gen %>% 
+mutate(DCt_Cx=Mean_Gen$Mean_Cx-Mean_Ref$Mean_Cx,
+       DCt_Tx=Mean_Gen$Mean_Tx-Mean_Ref$Mean_Tx,
+       DosDCt_Cx=2^-(DCt_Cx),
+       DosDCt_Tx=2^-(DCt_Tx),
+       DosDDCt=DosDCt_Tx/DosDCt_Cx)
+
+Analisis
+```
+
+```{r}
+Grafica_1 <- ggplot(Analisis,mapping = aes(x=DosDCt_Cx, 
+                                           y=DosDCt_Tx))+ 
+  geom_point(color = "#df3535") +
+  theme_dark() + 
+  labs(title = "Cambios de expresion de miRNAs",
+       subtitle = "Gráfica de dispersión",
+       caption = "Creo: Fernanda Hernández Rico",
+       x = "Condición control (2^-DCt)",
+       y = "Tratamiento (2^-DCt)")+
+  geom_smooth(method = "lm",
+              color = "#dfd535",
+              alpha = 0.005,
+              linewidth = 0.2)
+
+Grafica_1
+```
